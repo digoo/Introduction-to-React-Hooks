@@ -1,68 +1,347 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Criando front com react
 
-## Available Scripts
+## Na pasta root do projeto:
+> yarn create react-app <Nome do App front>
 
-In the project directory, you can run:
+> yarn add eslint prettier eslint-config-prettier eslint-plugin-prettier babel-eslint -D
 
-### `npm start`
+> yarn eslint --init
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```txt
+Install it following the order:
+- To check syntax, find problems, and enforce code style
+- JavaScript modules (import/export)
+- React
+- Only the Browser must be checked
+- Use a popular style guide
+- Airbnb (https://github.com/airbnb/javascript)
+- JavaScript
+- And Yes/Y for everything else.
+```
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+####  remove the package-lock.json (`since we are using yarn`)
 
-### `npm test`
+### To update yarn.lock just run:
+> yarn
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Configure:
 
-### `npm run build`
+### `.prettierrc as:`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```js
+{
+  "singleQuote": true,
+  "trailingComma": "es5"
+}
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### `.eslintrc.js as:`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```js
+module.exports = {
+  env: {
+    browser: true,
+    es6: true,
+  },
+ -> extends: [
+    'airbnb', 'prettier', 'prettier/react'
+  ],
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
+  },
+->  parser: 'babel-eslint',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 2018,
+    sourceType: 'module',
+  },
+  plugins: [
+    'react',
+->    'prettier',
+  ],
+->  rules: {
+    'prettier/prettier': 'error',
+    'react/jsx-filename-extension': [
+      'warn', {
+        extensions: ['.jsx','.js'],
+      },
+    ],
+    'import/prefer-default-export': 'off',
+    'no-param-reassign': 'off',
+    'no-console': ["error", {allow: [ "tron" ] }]
+  },
+};
 
-### `npm run eject`
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### `.editorconfig as:`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```java
+root = true
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+[*]
+end_of_line = lf
+indent_style = space
+indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Now execute:
 
-## Learn More
+> yarn add react-router-dom styled-components react-icons axios prop-types polished
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# `Installing react-hooks plugin for eslint`
 
-### Code Splitting
+> yarn add eslint-plugin-react-hooks -D
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+#### Now in eslint config file and in plugins part just add:
 
-### Analyzing the Bundle Size
+```java
+  plugins: [
+    'react',
+    'prettier',
+->  'react-hooks',
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+#### in rules part just add:
 
-### Making a Progressive Web App
+```java
+rules: {
+    'prettier/prettier': 'error',
+    'react/jsx-filename-extension': [
+      'warn', {
+        extensions: ['.jsx','.js'],
+      },
+    ],
+    'import/prefer-default-export': 'off',
+    'no-param-reassign': 'off',
+    'no-console': ['error', {allow: [ 'tron' ] }],
+->  'react-hooks/rules-of-hooks': 'error',
+->  'react-hooks/exhaustive-deps': 'warn',
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+# React hooks:
 
-### Advanced Configuration
+Diminuir verbosidade para compartilhar informações entre componentes (Redux, Apollo para GraphQL)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## useState
 
-### Deployment
+`useState:` Pertence a uma função para criar estados sem que seja necessario escrever em formato de classe
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+ - Criar estados dentro da propria função
+ - Pode usar a `Const`
+ - Estados separados para cada useCase
+ - useState retorna array:
+ - - Primeira posição retorna o estado em si
+ - - Segunda posição, uma função para atualizar as informações do estado
+ - - - Antes: this.setState
+ - - - Agora: dentro de uma funcao 'handleAdd' usa-se: função([...estado, 'algo a ser adicionado']), exemplo:
+ ```JavaScript
+ import React, { useState } from 'react';
 
-### `npm run build` fails to minify
+function App() {
+  const [tech, setTech] = useState(['reactJS', 'React Native']);
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+  function handleAdd() {
+    setTech([...tech, 'Node.js']);
+  }
+
+  return (
+    <>
+      <ul>
+        {tech.map(t => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+      <button type="button" onClick={handleAdd}>
+        Adicionar
+      </button>
+    </>
+  );
+}
+
+export default App;
+ ```
+`Outro exemplo, onde usa-se 2 estados:`
+
+```js
+import React, { useState } from 'react';
+
+function App() {
+  const [tech, setTech] = useState(['reactJS', 'React Native']);
+  const [newTech, setNewTech] = useState('');
+
+  function handleAdd() {
+    setTech([...tech, newTech]);
+    setNewTech('');
+  }
+
+  return (
+    <>
+      <ul>
+        {tech.map(t => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        value={newTech}
+        onChange={e => setNewTech(e.target.value)}
+      />
+      <button type="button" onClick={handleAdd}>
+        Adicionar
+      </button>
+    </>
+  );
+}
+
+export default App;
+
+```
+## useEffect
+
+`useEffect:` Sobrepoe os metodos do ciclo de vida da aplicação (componentDidMount, componentDidUpdate, componentWillMount, componentWillUnMount, etc)
+
+`useEffect(função, monitoraMudançaDeEstado) => useEffect(() => {função faz algo}, [estado a ser monitorado])`
+
+ - Pode ser usado em formato de função, sendo:
+ - - Primeiro parametro a funcao a ser executada
+ - - Segundo parametro quando a ser executada a funcao
+
+ ```js
+ "componentDidUpdate"
+   useEffect(() => {
+    localStorage.setItem('tech', JSON.stringify(tech));
+  }, [tech]); <- Estado sendo monitorado
+ ```
+ - Exemplo para quando você não precisar monitorar algum estado:
+
+ ```js
+ "componentDidMount"
+   useEffect(() => {
+    const getTech = localStorage.getItem('tech');
+
+    if (getTech) {
+      setTech(JSON.parse(getTech));
+    }
+  }, []); <- Vazio
+ ```
+
+ - exemplo para quando você precisa retornar algo assim que o componente deixa de ser montado, como faziamos no componentWillUnMount, no caso de um EventListener ou monta-lo com componentWillMount.
+
+ ```js
+ "componentWillUnMount"
+   useEffect(() => {
+    const getTech = localStorage.getItem('tech');
+
+    if (getTech) {
+      setTech(JSON.parse(getTech));
+    }
+
+    return () => {}; <- Retorno de função
+  }, []);
+ ```
+  ```js
+ "componentWillMount"
+   useEffect(() => {
+    localStorage.setItem('tech', JSON.stringify(tech));
+
+  return () => {}; <- Retorno de função
+  }, [tech]);
+ ```
+
+ #### Com a mudança do codigo acima, podemos então deixar o codigo final assim:
+
+ `E caso tenhamos algo no localStorage ele vai carregar os dados na <li></li>`
+
+ ```JavaScript
+ import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [tech, setTech] = useState([]);
+  const [newTech, setNewTech] = useState('');
+
+  function handleAdd() {
+    setTech([...tech, newTech]);
+    setNewTech('');
+  }
+
+  useEffect(() => {
+    const getTech = localStorage.getItem('tech');
+
+    if (getTech) {
+      setTech(JSON.parse(getTech));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tech', JSON.stringify(tech));
+  }, [tech]);
+
+  return (
+    <>
+      <ul>
+        {tech.map(t => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        value={newTech}
+        onChange={e => setNewTech(e.target.value)}
+      />
+      <button type="button" onClick={handleAdd}>
+        Adicionar
+      </button>
+    </>
+  );
+}
+
+export default App;
+ ```
+## useMemo
+
+`useMemo:` Para ser usado quando se precisa contabilizar algo e para que não seja contabilizado sempre que a pagina for renderizada, mas sim so quando a informação for realmente alterada
+
+`const techSize = useMemo(() => valor, [Baseado na mudança desse estado]);`
+
+:
+
+`const techSize = useMemo(() => tech.length, [tech]);`
+
+
+Usando ela no codigo:
+
+`<strong>Você tem {techSize} tecnologias</strong>`
+
+## useCallBack
+
+`useCallBack:` Similar ao useMemo, mas ao inves de retornar um unico valor, ele retorna uma função.
+
+ - Serve para funções, parecida com a `handleAdd` do nosso codigo
+ - serve para substituir functions sendo chamadas dentro de outra function
+ - a function padrão é montada toda vez que um valor do estado mudar, isso poderá usar muito recurso e não é viavel
+
+ #### forma de usar:
+
+ Alterar:
+ ```js
+ function handleAdd() {
+    setTech([...tech, newTech]);
+    setNewTech('');
+  }
+ ```
+
+ Para:
+  ```js
+ const handleAdd = useCallBack( () => {
+    setTech([...tech, newTech]);
+    setNewTech('');
+  }, [newTech, tech] );
+ ```
